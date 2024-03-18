@@ -6,9 +6,9 @@ import {
   useColorScheme,
   ScrollView,
 } from 'react-native';
-import {useRoute, RouteProp} from '@react-navigation/native';
-import {TaskModel} from '../models/TaskModel';
-import {RootStackParamList} from '../types/RootStackParamList';
+import { useRoute, RouteProp } from '@react-navigation/native';
+import { TaskModel } from '../models/TaskModel';
+import { RootStackParamList } from '../types/RootStackParamList';
 
 type DetailScreenRouteProp = RouteProp<RootStackParamList, 'Details'>;
 
@@ -27,7 +27,7 @@ const DetailScreen = () => {
           ? styles.darkBackgroundTheme
           : styles.lightBackgroundTheme
       }>
-      <Image source={{uri: taskModel.imageUrl}} style={styles.image} />
+      <Image source={{ uri: taskModel.imageUrl }} style={styles.image} />
       <Text style={[styles.title, textColorTheme]}>{taskModel.title}</Text>
       <Text style={[styles.description, textColorTheme]}>
         {taskModel.description}

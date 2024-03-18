@@ -1,9 +1,9 @@
 import React from 'react';
-import {Button} from 'react-native';
-import {useOnlineStatus} from './OnlineStatusContext';
+import { Button } from 'react-native';
+import { useOnlineStatus } from './OnlineStatusContext';
 
 const ConnectionToggleButton: React.FC = () => {
-  const {isOnline, toggleOnlineStatus} = useOnlineStatus();
+  const { isOnline, toggleOnlineStatus } = useOnlineStatus();
 
   return (
     <Button

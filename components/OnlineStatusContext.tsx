@@ -25,7 +25,7 @@ export const useOnlineStatus = () => {
   return context;
 };
 
-export const OnlineStatusProvider: React.FC<{children: ReactNode}> = ({
+export const OnlineStatusProvider: React.FC<{ children: ReactNode }> = ({
   children,
 }) => {
   const [isOnline, setIsOnline] = useState<boolean>(true);
@@ -35,7 +35,7 @@ export const OnlineStatusProvider: React.FC<{children: ReactNode}> = ({
   }, []);
 
   return (
-    <OnlineStatusContext.Provider value={{isOnline, toggleOnlineStatus}}>
+    <OnlineStatusContext.Provider value={{ isOnline, toggleOnlineStatus }}>
       {children}
     </OnlineStatusContext.Provider>
   );

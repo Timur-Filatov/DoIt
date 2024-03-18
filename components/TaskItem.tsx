@@ -1,17 +1,17 @@
 import React from 'react';
-import {Image, Text, View, StyleSheet, useColorScheme} from 'react-native';
+import { useColorScheme, View, Image, Text, StyleSheet } from 'react-native';
 
 interface TaskItemProps {
   title: string;
   imageUrl: string;
 }
 
-const TaskItem: React.FC<TaskItemProps> = ({title, imageUrl}) => {
+const TaskItem: React.FC<TaskItemProps> = ({ title, imageUrl }) => {
   const theme = useColorScheme();
 
   return (
     <View style={styles.container}>
-      <Image source={{uri: imageUrl}} style={styles.image} />
+      <Image source={{ uri: imageUrl }} style={styles.image} />
       <Text
         style={[
           styles.title,

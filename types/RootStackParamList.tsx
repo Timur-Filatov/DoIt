@@ -1,4 +1,4 @@
-import {TaskModel} from '../models/TaskModel';
+import { TaskModel } from '../models/TaskModel';
 
 export type RootStackParamList = {
   'Tasks List': {

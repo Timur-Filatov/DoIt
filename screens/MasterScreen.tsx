@@ -1,14 +1,14 @@
-import React, {useEffect, useState} from 'react';
-import {Pressable, FlatList, useColorScheme, StyleSheet} from 'react-native';
-import {useNavigation} from '@react-navigation/native';
-import {StackNavigationProp} from '@react-navigation/stack';
+import React, { useEffect, useState } from 'react';
+import { Pressable, FlatList, useColorScheme, StyleSheet } from 'react-native';
+import { useNavigation } from '@react-navigation/native';
+import { StackNavigationProp } from '@react-navigation/stack';
 import TaskItem from '../components/TaskItem';
-import {TaskModel} from '../models/TaskModel';
-import {RootStackParamList} from '../types/RootStackParamList';
-import {useOnlineStatus} from '../components/OnlineStatusContext';
+import { TaskModel } from '../models/TaskModel';
+import { RootStackParamList } from '../types/RootStackParamList';
+import { useOnlineStatus } from '../components/OnlineStatusContext';
 
 const MasterScreen = () => {
-  const {isOnline} = useOnlineStatus();
+  const { isOnline } = useOnlineStatus();
   const theme = useColorScheme();
   const navigation = useNavigation<StackNavigationProp<RootStackParamList>>();
 
@@ -65,7 +65,7 @@ const MasterScreen = () => {
     <FlatList
       data={tasks}
       keyExtractor={item => item.id.toString()}
-      renderItem={({item}) => (
+      renderItem={({ item }) => (
         <Pressable onPress={() => navigation.navigate('Details', item)}>
           <TaskItem title={item.title} imageUrl={item.imageUrl} />
         </Pressable>
