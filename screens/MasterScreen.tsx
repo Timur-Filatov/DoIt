@@ -1,16 +1,15 @@
 import React, { useEffect, useState } from 'react';
 import { Pressable, FlatList, useColorScheme, StyleSheet } from 'react-native';
-import { useNavigation } from '@react-navigation/native';
-import { StackNavigationProp } from '@react-navigation/stack';
+import { NavigationProp, useNavigation } from '@react-navigation/native';
 import TaskItem from '../components/TaskItem';
 import { TaskModel } from '../models/TaskModel';
 import { RootStackParamList } from '../types/RootStackParamList';
 import { useOnlineStatus } from '../components/OnlineStatusContext';
 
-const MasterScreen = () => {
+const MasterScreen: React.FC = () => {
   const { isOnline } = useOnlineStatus();
   const theme = useColorScheme();
-  const navigation = useNavigation<StackNavigationProp<RootStackParamList>>();
+  const navigation = useNavigation<NavigationProp<RootStackParamList>>();
 
   const [tasks, setTasks] = useState<TaskModel[]>([]);
 
@@ -66,7 +65,8 @@ const MasterScreen = () => {
       data={tasks}
       keyExtractor={item => item.id.toString()}
       renderItem={({ item }) => (
-        <Pressable onPress={() => navigation.navigate('Details', item)}>
+        <Pressable
+          onPress={() => navigation.navigate('Details', { task: item })}>
           <TaskItem title={item.title} imageUrl={item.imageUrl} />
         </Pressable>
       )}
