@@ -6,15 +6,20 @@ import { TaskModel } from '../models/TaskModel';
 import { RootStackParamList } from '../types/RootStackParamList';
 import { useOnlineStatus } from '../components/OnlineStatusContext';
 import { useTheme } from '../components/ThemeContext';
+import { useQuery } from '@realm/react';
+import { TaskSchema } from '../schemas/TaskSchema';
 
 const MasterScreen: React.FC = () => {
   const { isOnline } = useOnlineStatus();
   const { isDarkTheme } = useTheme();
   const navigation = useNavigation<NavigationProp<RootStackParamList>>();
+  const dbTasks = useQuery(TaskSchema);
 
   const [tasks, setTasks] = useState<TaskModel[]>([]);
 
   useEffect(() => {
+    let convertedDBTasks: TaskModel[] = JSON.parse(JSON.stringify(dbTasks)) as TaskModel[];
+
     if (isOnline) {
       async function fetchData() {
         try {
@@ -27,7 +32,11 @@ const MasterScreen: React.FC = () => {
             description: item.body,
             imageUrl: 'https://via.placeholder.com/150',
           }));
-          setTasks(mappedTasks);
+          const onlineExceptOffline = mappedTasks
+            .filter(x => !convertedDBTasks.some(y => y.id === x.id))
+            .sort(x => x.id);
+          const mergedTasks = convertedDBTasks.concat(onlineExceptOffline);
+          setTasks(mergedTasks);
         } catch (error) {
           console.error(error);
         }
@@ -36,39 +45,17 @@ const MasterScreen: React.FC = () => {
       return;
     }
 
-    setTasks([
-      {
-        id: 1,
-        title: 'Item 1',
-        description: 'Lorem ipsum Dollar amet long Descrtiption text',
-        imageUrl: 'https://cdn2.thecatapi.com/images/bvp.jpg',
-      },
-      {
-        id: 2,
-        title: 'Item 2',
-        description: 'Lorem ipsum Dollar amet long Item 2 Descrtiption text',
-        imageUrl: 'https://cdn2.thecatapi.com/images/9kd.jpg',
-      },
-      {
-        id: 3,
-        title: 'Item 3',
-        description:
-          'Lorem ipsum Dollar amet longer Item 3 Descrtiption text with next Lorem ipsum Dollar and more Lorem ipsum Dollar and Lorem ipsum Dollar',
-        imageUrl: 'https://cdn2.thecatapi.com/images/d2g.gif',
-      },
-    ]);
-  }, [isOnline]);
-
-  const onUpdated = () => {
-    console.log('TODO: Implement Update tasks'); //TODO: Implement Update tasks
-  };
+    if (dbTasks) {
+      setTasks(convertedDBTasks);
+    }
+  }, [dbTasks, isOnline]);
 
   return (
     <FlatList
       data={tasks}
       keyExtractor={item => item.id.toString()}
       renderItem={({ item }) => (
-        <Pressable onPress={() => navigation.navigate('Details', { task: item, onUpdated: onUpdated })}>
+        <Pressable onPress={() => navigation.navigate('Details', { task: item })}>
           <TaskItem title={item.title} imageUrl={item.imageUrl} />
         </Pressable>
       )}

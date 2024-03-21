@@ -2,9 +2,11 @@ import React, { useState } from 'react';
 import { Image, StyleSheet, ScrollView, Button, TextInput } from 'react-native';
 import { NativeStackScreenProps } from '@react-navigation/native-stack';
 import { RootStackParamList } from '../types/RootStackParamList';
-import RNFS from 'react-native-fs';
 import { TaskModel } from '../models/TaskModel';
 import { useTheme } from '../components/ThemeContext';
+import { useRealm } from '@realm/react';
+import { TaskModel } from '../models/TaskModel';
+import { UpdateMode } from 'realm';
 
 type DetailScreenRouteProp = NativeStackScreenProps<RootStackParamList, 'Details'>;
 
@@ -12,7 +14,6 @@ const DetailScreen: React.FC<DetailScreenRouteProp> = ({
   route: {
     params: {
       task: { id, imageUrl, title, description },
-      onUpdated,
     },
   },
 }) => {
@@ -20,33 +21,16 @@ const DetailScreen: React.FC<DetailScreenRouteProp> = ({
   const [currentDescription, setCurrentDescription] = useState(description);
   const [currentImageUrl, setCurrentImageUrl] = useState(imageUrl);
 
+  const realm = useRealm();
   const { isDarkTheme } = useTheme();
   const textTheme = isDarkTheme ? styles.darkTheme : styles.lightTheme;
 
   const saveTodo = async () => {
-    const filePath = RNFS.DocumentDirectoryPath + '/todos.json';
-    let fileContents = '';
-    let todos: TaskModel[] = [];
-    if (await RNFS.exists(filePath)) {
-      // await RNFS.unlink(filePath);
-      fileContents = await RNFS.readFile(filePath, 'utf8');
-      todos = JSON.parse(fileContents).todos as TaskModel[];
-    } else if (!(await RNFS.exists(RNFS.DocumentDirectoryPath))) {
-      RNFS.mkdir(RNFS.DocumentDirectoryPath);
-    }
-
-    if (todos.some(x => x.id === id)) {
-      todos = todos.map(t =>
-        t.id === id ? { ...t, title: currentTitle, description: currentDescription, imageUrl: currentImageUrl } : t,
-      );
-    } else {
-      todos.push({ id, title: currentTitle, description: currentDescription, imageUrl: currentImageUrl });
-    }
-    await RNFS.writeFile(filePath, JSON.stringify({ todos }), 'utf8');
-    onUpdated();
+    let task: TaskModel = { id: id, title: currentTitle, description: currentDescription, imageUrl: currentImageUrl };
+    realm.write(() => {
+      realm.create('Task', task, UpdateMode.Modified);
+    });
   };
-  const textColorTheme =
-    theme === 'dark' ? styles.darkTheme : styles.lightTheme;
 
   return (
     <ScrollView
