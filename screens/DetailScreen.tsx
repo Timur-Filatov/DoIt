@@ -4,6 +4,7 @@ import { NativeStackScreenProps } from '@react-navigation/native-stack';
 import { RootStackParamList } from '../types/RootStackParamList';
 import RNFS from 'react-native-fs';
 import { TaskModel } from '../models/TaskModel';
+import { useTheme } from '../components/ThemeContext';
 
 type DetailScreenRouteProp = NativeStackScreenProps<RootStackParamList, 'Details'>;
 
@@ -19,8 +20,8 @@ const DetailScreen: React.FC<DetailScreenRouteProp> = ({
   const [currentDescription, setCurrentDescription] = useState(description);
   const [currentImageUrl, setCurrentImageUrl] = useState(imageUrl);
 
-  const theme = useColorScheme();
-  const textTheme = theme === 'dark' ? styles.darkTheme : styles.lightTheme;
+  const { isDarkTheme } = useTheme();
+  const textTheme = isDarkTheme ? styles.darkTheme : styles.lightTheme;
 
   const saveTodo = async () => {
     const filePath = RNFS.DocumentDirectoryPath + '/todos.json';
@@ -50,7 +51,7 @@ const DetailScreen: React.FC<DetailScreenRouteProp> = ({
   return (
     <ScrollView
       contentContainerStyle={styles.container}
-      style={theme === 'dark' ? styles.darkBackgroundTheme : styles.lightBackgroundTheme}>
+      style={isDarkTheme ? styles.darkBackgroundTheme : styles.lightBackgroundTheme}>
       <Image source={{ uri: imageUrl }} style={styles.image} />
       <TextInput
         value={currentTitle}

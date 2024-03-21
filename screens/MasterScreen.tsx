@@ -1,14 +1,15 @@
 import React, { useEffect, useState } from 'react';
-import { Pressable, FlatList, useColorScheme, StyleSheet } from 'react-native';
+import { Pressable, FlatList, StyleSheet } from 'react-native';
 import { NavigationProp, useNavigation } from '@react-navigation/native';
 import TaskItem from '../components/TaskItem';
 import { TaskModel } from '../models/TaskModel';
 import { RootStackParamList } from '../types/RootStackParamList';
 import { useOnlineStatus } from '../components/OnlineStatusContext';
+import { useTheme } from '../components/ThemeContext';
 
 const MasterScreen: React.FC = () => {
   const { isOnline } = useOnlineStatus();
-  const theme = useColorScheme();
+  const { isDarkTheme } = useTheme();
   const navigation = useNavigation<NavigationProp<RootStackParamList>>();
 
   const [tasks, setTasks] = useState<TaskModel[]>([]);
@@ -71,7 +72,7 @@ const MasterScreen: React.FC = () => {
           <TaskItem title={item.title} imageUrl={item.imageUrl} />
         </Pressable>
       )}
-      style={theme === 'dark' ? styles.darkTheme : styles.lightTheme}
+      style={isDarkTheme ? styles.darkTheme : styles.lightTheme}
     />
   );
 };
@@ -81,7 +82,7 @@ const styles = StyleSheet.create({
     backgroundColor: 'white',
   },
   darkTheme: {
-    backgroundColor: 'black',
+    backgroundColor: '#222',
   },
 });
 

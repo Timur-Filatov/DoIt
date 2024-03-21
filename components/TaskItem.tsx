@@ -1,5 +1,6 @@
 import React from 'react';
-import { useColorScheme, View, Image, Text, StyleSheet } from 'react-native';
+import { View, Image, Text, StyleSheet } from 'react-native';
+import { useTheme } from './ThemeContext';
 
 interface TaskItemProps {
   title: string;
@@ -7,12 +8,12 @@ interface TaskItemProps {
 }
 
 const TaskItem: React.FC<TaskItemProps> = ({ title, imageUrl }) => {
-  const theme = useColorScheme();
+  const { isDarkTheme } = useTheme();
 
   return (
     <View style={styles.container}>
       <Image source={{ uri: imageUrl }} style={styles.image} />
-      <Text style={[styles.title, theme === 'dark' ? styles.darkTheme : styles.lightTheme]}>{title}</Text>
+      <Text style={[styles.title, isDarkTheme ? styles.darkTheme : styles.lightTheme]}>{title}</Text>
     </View>
   );
 };
