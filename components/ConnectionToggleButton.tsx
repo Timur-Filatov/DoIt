@@ -6,11 +6,7 @@ const ConnectionToggleButton: React.FC = () => {
   const { isOnline, toggleOnlineStatus } = useOnlineStatus();
 
   return (
-    <Button
-      onPress={toggleOnlineStatus}
-      title={isOnline ? 'Online' : 'Offline'}
-      color={isOnline ? 'green' : '#999'}
-    />
+    <Button onPress={toggleOnlineStatus} title={isOnline ? 'Online' : 'Offline'} color={isOnline ? 'green' : '#999'} />
   );
 };
 

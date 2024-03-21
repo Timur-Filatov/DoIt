@@ -14,11 +14,7 @@ function AppNavigator() {
     <OnlineStatusProvider>
       <NavigationContainer>
         <Stack.Navigator initialRouteName="Tasks List">
-          <Stack.Screen
-            name="Tasks List"
-            component={MasterScreen}
-            options={{ headerRight: ConnectionToggleButton }}
-          />
+          <Stack.Screen name="Tasks List" component={MasterScreen} options={{ headerRight: ConnectionToggleButton }} />
           <Stack.Screen name="Details" component={DetailScreen} />
         </Stack.Navigator>
       </NavigationContainer>

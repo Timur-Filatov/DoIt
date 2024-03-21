@@ -12,13 +12,7 @@ const TaskItem: React.FC<TaskItemProps> = ({ title, imageUrl }) => {
   return (
     <View style={styles.container}>
       <Image source={{ uri: imageUrl }} style={styles.image} />
-      <Text
-        style={[
-          styles.title,
-          theme === 'dark' ? styles.darkTheme : styles.lightTheme,
-        ]}>
-        {title}
-      </Text>
+      <Text style={[styles.title, theme === 'dark' ? styles.darkTheme : styles.lightTheme]}>{title}</Text>
     </View>
   );
 };

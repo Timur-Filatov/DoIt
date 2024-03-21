@@ -6,5 +6,6 @@ export type RootStackParamList = {
   };
   Details: {
     task: TaskModel;
+    onUpdated: () => void;
   };
 };

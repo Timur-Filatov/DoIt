@@ -17,9 +17,7 @@ const MasterScreen: React.FC = () => {
     if (isOnline) {
       async function fetchData() {
         try {
-          let response = await fetch(
-            'https://jsonplaceholder.typicode.com/posts',
-          );
+          let response = await fetch('https://jsonplaceholder.typicode.com/posts');
           let json = await response.json();
 
           const mappedTasks: TaskModel[] = json.map((item: any) => ({
@@ -60,13 +58,16 @@ const MasterScreen: React.FC = () => {
     ]);
   }, [isOnline]);
 
+  const onUpdated = () => {
+    console.log('TODO: Implement Update tasks'); //TODO: Implement Update tasks
+  };
+
   return (
     <FlatList
       data={tasks}
       keyExtractor={item => item.id.toString()}
       renderItem={({ item }) => (
-        <Pressable
-          onPress={() => navigation.navigate('Details', { task: item })}>
+        <Pressable onPress={() => navigation.navigate('Details', { task: item, onUpdated: onUpdated })}>
           <TaskItem title={item.title} imageUrl={item.imageUrl} />
         </Pressable>
       )}
