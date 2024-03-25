@@ -1,8 +1,8 @@
 import React, { useState } from 'react';
-import { Image, StyleSheet, ScrollView, Button, TextInput } from 'react-native';
+import { Image, StyleSheet, ScrollView, Button, TextInput, Platform, PermissionsAndroid } from 'react-native';
 import { NativeStackScreenProps } from '@react-navigation/native-stack';
 import { RootStackParamList } from '../types/RootStackParamList';
-import { TaskModel } from '../models/TaskModel';
+import { launchImageLibrary } from 'react-native-image-picker';
 import { useTheme } from '../components/ThemeContext';
 import { useRealm } from '@realm/react';
 import { TaskModel } from '../models/TaskModel';
@@ -32,11 +32,60 @@ const DetailScreen: React.FC<DetailScreenRouteProp> = ({
     });
   };
 
+  const requestStoragePermission = async () => {
+    if (Platform.OS === 'android') {
+      try {
+        const granted = await PermissionsAndroid.request(PermissionsAndroid.PERMISSIONS.READ_EXTERNAL_STORAGE, {
+          title: 'Permission to access storage',
+          message: 'We need permission to access your photos',
+          buttonNeutral: 'Ask Me Later',
+          buttonNegative: 'Cancel',
+          buttonPositive: 'OK',
+        });
+        return granted === PermissionsAndroid.RESULTS.GRANTED;
+      } catch (err) {
+        console.warn(err);
+        return false;
+      }
+    }
+    return true;
+  };
+
+  const selectImage = async () => {
+    const hasPermission = await requestStoragePermission();
+    if (!hasPermission) {
+      return;
+    }
+
+    launchImageLibrary(
+      {
+        mediaType: 'photo',
+        maxWidth: 1920,
+        maxHeight: 1920,
+        quality: 0.7,
+        selectionLimit: 1,
+        includeBase64: false,
+      },
+      response => {
+        if (response.didCancel) {
+          console.log('User cancelled image picker');
+        } else if (response.errorCode) {
+          console.log('ImagePicker Error: ', response.errorMessage);
+        } else if (response.assets && response.assets.length > 0 && response.assets[0].uri) {
+          setCurrentImageUrl(response.assets[0].uri as string);
+        } else {
+          console.log('No image selected');
+        }
+      },
+    );
+  };
+
   return (
     <ScrollView
       contentContainerStyle={styles.container}
       style={isDarkTheme ? styles.darkBackgroundTheme : styles.lightBackgroundTheme}>
-      <Image source={{ uri: imageUrl }} style={styles.image} />
+      <Image source={{ uri: currentImageUrl }} style={styles.image} />
+      <Button title="Select Image" onPress={selectImage} />
       <TextInput
         value={currentTitle}
         onChangeText={setCurrentTitle}
