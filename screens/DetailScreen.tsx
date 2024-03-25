@@ -90,13 +90,14 @@ const DetailScreen: React.FC<DetailScreenRouteProp> = ({
         value={currentTitle}
         onChangeText={setCurrentTitle}
         placeholder="Title"
-        style={[styles.title, textTheme]}
+        style={[styles.title, styles.borderStyle, textTheme]}
       />
       <TextInput
         value={currentDescription}
         onChangeText={setCurrentDescription}
         placeholder="Description"
-        style={[styles.title, textTheme]}
+        multiline
+        style={[styles.description, styles.borderStyle, textTheme]}
       />
       <Button title="Save" onPress={saveTodo} />
     </ScrollView>
@@ -111,6 +112,7 @@ const styles = StyleSheet.create({
     alignContent: 'stretch',
     flexWrap: 'nowrap',
     padding: 10,
+    rowGap: 10,
   },
   image: {
     width: 'auto',
@@ -121,9 +123,20 @@ const styles = StyleSheet.create({
   title: {
     fontWeight: 'bold',
     textAlignVertical: 'center',
+    paddingHorizontal: 10,
+    paddingVertical: 5,
   },
   description: {
     textAlignVertical: 'center',
+    minHeight: 100,
+    paddingHorizontal: 10,
+    paddingVertical: 5,
+    verticalAlign: 'top',
+  },
+  borderStyle: {
+    borderWidth: 1,
+    borderRadius: 5,
+    borderColor: '#999',
   },
   lightTheme: {
     color: 'black',
