@@ -1,11 +1,11 @@
-import React from 'react';
+import React, { ReactElement } from 'react';
 import AppNavigator from './AppNavigator';
-import { OnlineStatusProvider } from './components/OnlineStatusContext';
-import { ThemeProvider } from './components/ThemeContext';
+import { OnlineStatusProvider } from './contexts/OnlineStatusContext';
+import { ThemeProvider } from './contexts/ThemeContext';
 import { RealmProvider } from '@realm/react';
-import { TaskSchema } from './schemas/TaskSchema';
+import TaskSchema from './schemas/TaskSchema';
 
-export default function App() {
+export default function App(): ReactElement {
   return (
     <RealmProvider schema={[TaskSchema]}>
       <OnlineStatusProvider>

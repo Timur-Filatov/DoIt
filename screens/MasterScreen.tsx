@@ -1,15 +1,15 @@
-import React, { useEffect, useState } from 'react';
+import React, { ReactElement, useEffect, useState } from 'react';
 import { Pressable, FlatList, StyleSheet } from 'react-native';
 import { NavigationProp, useNavigation } from '@react-navigation/native';
 import TaskItem from '../components/TaskItem';
 import { TaskModel } from '../models/TaskModel';
 import { RootStackParamList } from '../types/RootStackParamList';
-import { useOnlineStatus } from '../components/OnlineStatusContext';
-import { useTheme } from '../components/ThemeContext';
+import { useOnlineStatus } from '../contexts/OnlineStatusContext';
+import { useTheme } from '../contexts/ThemeContext';
 import { useQuery } from '@realm/react';
-import { TaskSchema } from '../schemas/TaskSchema';
+import TaskSchema from '../schemas/TaskSchema';
 
-const MasterScreen: React.FC = () => {
+const MasterScreen = (): ReactElement => {
   const { isOnline } = useOnlineStatus();
   const { isDarkTheme } = useTheme();
   const navigation = useNavigation<NavigationProp<RootStackParamList>>();
@@ -18,13 +18,13 @@ const MasterScreen: React.FC = () => {
   const [tasks, setTasks] = useState<TaskModel[]>([]);
 
   useEffect(() => {
-    let convertedDBTasks: TaskModel[] = JSON.parse(JSON.stringify(dbTasks)) as TaskModel[];
+    const convertedDBTasks: TaskModel[] = JSON.parse(JSON.stringify(dbTasks)) as TaskModel[];
 
     if (isOnline) {
       async function fetchData() {
         try {
-          let response = await fetch('https://jsonplaceholder.typicode.com/posts');
-          let json = await response.json();
+          const response = await fetch('https://jsonplaceholder.typicode.com/posts');
+          const json = await response.json();
 
           const mappedTasks: TaskModel[] = json.map((item: any) => ({
             id: item.id,

@@ -1,15 +1,15 @@
-import React from 'react';
+import React, { ReactElement } from 'react';
 import { DarkTheme, DefaultTheme, NavigationContainer } from '@react-navigation/native';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import MasterScreen from './screens/MasterScreen';
 import DetailScreen from './screens/DetailScreen';
 import { RootStackParamList } from './types/RootStackParamList';
-import { useTheme } from './components/ThemeContext';
-import { RightHeaderButtons } from './components/RightHeaderButtons';
+import { useTheme } from './contexts/ThemeContext';
+import RightHeaderButtons from './components/RightHeaderButtons';
 
 const Stack = createNativeStackNavigator<RootStackParamList>();
 
-function AppNavigator() {
+export default function AppNavigator(): ReactElement {
   const { isDarkTheme } = useTheme();
 
   return (
@@ -21,5 +21,3 @@ function AppNavigator() {
     </NavigationContainer>
   );
 }
-
-export default AppNavigator;

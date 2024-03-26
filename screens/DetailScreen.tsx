@@ -1,22 +1,22 @@
-import React, { useState } from 'react';
+import React, { ReactElement, useState } from 'react';
 import { Image, StyleSheet, ScrollView, Button, TextInput, Platform, PermissionsAndroid } from 'react-native';
 import { NativeStackScreenProps } from '@react-navigation/native-stack';
 import { RootStackParamList } from '../types/RootStackParamList';
 import { launchImageLibrary } from 'react-native-image-picker';
-import { useTheme } from '../components/ThemeContext';
+import { useTheme } from '../contexts/ThemeContext';
 import { useRealm } from '@realm/react';
 import { TaskModel } from '../models/TaskModel';
 import { UpdateMode } from 'realm';
 
 type DetailScreenRouteProp = NativeStackScreenProps<RootStackParamList, 'Details'>;
 
-const DetailScreen: React.FC<DetailScreenRouteProp> = ({
+const DetailScreen = ({
   route: {
     params: {
       task: { id, imageUrl, title, description },
     },
   },
-}) => {
+}: DetailScreenRouteProp): ReactElement => {
   const [currentTitle, setCurrentTitle] = useState(title);
   const [currentDescription, setCurrentDescription] = useState(description);
   const [currentImageUrl, setCurrentImageUrl] = useState(imageUrl);
@@ -26,7 +26,7 @@ const DetailScreen: React.FC<DetailScreenRouteProp> = ({
   const textTheme = isDarkTheme ? styles.darkTheme : styles.lightTheme;
 
   const saveTodo = async () => {
-    let task: TaskModel = { id: id, title: currentTitle, description: currentDescription, imageUrl: currentImageUrl };
+    const task: TaskModel = { id: id, title: currentTitle, description: currentDescription, imageUrl: currentImageUrl };
     realm.write(() => {
       realm.create('Task', task, UpdateMode.Modified);
     });

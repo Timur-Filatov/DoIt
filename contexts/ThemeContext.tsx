@@ -1,4 +1,4 @@
-import React, { createContext, useContext, ReactNode, useState, useCallback } from 'react';
+import React, { createContext, useContext, ReactNode, useState, useCallback, ReactElement } from 'react';
 import { useColorScheme } from 'react-native';
 
 interface ThemeContextType {
@@ -16,7 +16,7 @@ export const useTheme = () => {
   return context;
 };
 
-export const ThemeProvider: React.FC<{ children: ReactNode }> = ({ children }) => {
+export const ThemeProvider = ({ children }: { children: ReactNode }): ReactElement => {
   const [isDarkTheme, setIsDarkTheme] = useState<boolean>(true);
   const isDeviceThemeDark = useColorScheme() === 'dark';
 

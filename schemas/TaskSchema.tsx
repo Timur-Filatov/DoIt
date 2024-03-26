@@ -1,6 +1,6 @@
 import { Realm } from '@realm/react';
 
-export class TaskSchema extends Realm.Object {
+export default class TaskSchema extends Realm.Object {
   id!: number;
   title!: string;
   description!: string;

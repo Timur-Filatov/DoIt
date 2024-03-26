@@ -1,13 +1,13 @@
-import React from 'react';
+import React, { ReactElement } from 'react';
 import { View, Image, Text, StyleSheet } from 'react-native';
-import { useTheme } from './ThemeContext';
+import { useTheme } from '../contexts/ThemeContext';
 
 interface TaskItemProps {
   title: string;
   imageUrl: string;
 }
 
-const TaskItem: React.FC<TaskItemProps> = ({ title, imageUrl }) => {
+const TaskItem = ({ title, imageUrl }: TaskItemProps): ReactElement => {
   const { isDarkTheme } = useTheme();
 
   return (

@@ -1,8 +1,8 @@
-import React from 'react';
+import React, { ReactElement } from 'react';
 import { Button } from 'react-native';
-import { useTheme } from './ThemeContext';
+import { useTheme } from '../contexts/ThemeContext';
 
-const ThemeToggleButton: React.FC = () => {
+const ThemeToggleButton = (): ReactElement => {
   const { isDarkTheme, toggleTheme } = useTheme();
 
   return (

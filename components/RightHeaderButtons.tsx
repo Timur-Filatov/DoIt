@@ -1,9 +1,9 @@
-import React from 'react';
+import React, { ReactElement } from 'react';
 import ConnectionToggleButton from './ConnectionToggleButton';
 import ThemeToggleButton from './ThemeToggleButton';
 import { StyleSheet, View } from 'react-native';
 
-export const RightHeaderButtons: React.FC = () => {
+const RightHeaderButtons = (): ReactElement => {
   return (
     <View style={styles.container}>
       <ConnectionToggleButton />
@@ -18,3 +18,5 @@ const styles = StyleSheet.create({
     gap: 10,
   },
 });
+
+export default RightHeaderButtons;

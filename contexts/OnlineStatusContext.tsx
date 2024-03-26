@@ -1,4 +1,4 @@
-import React, { createContext, useContext, ReactNode, useState, useCallback } from 'react';
+import React, { createContext, useContext, ReactNode, useState, useCallback, ReactElement } from 'react';
 
 interface OnlineStatusContextType {
   isOnline: boolean;
@@ -15,7 +15,7 @@ export const useOnlineStatus = () => {
   return context;
 };
 
-export const OnlineStatusProvider: React.FC<{ children: ReactNode }> = ({ children }) => {
+export const OnlineStatusProvider = ({ children }: { children: ReactNode }): ReactElement => {
   const [isOnline, setIsOnline] = useState<boolean>(true);
 
   const toggleOnlineStatus = useCallback(() => {
