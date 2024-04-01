@@ -8,7 +8,7 @@ const AddTaskButton = (): ReactElement => {
   const navigation = useNavigation<NavigationProp<RootStackParamList>>();
 
   const newItemId = Math.floor(Date.now() / 100);
-  const task: TaskModel = { id: newItemId };
+  const task: TaskModel = { id: newItemId, title: null, description: null, imageUrl: null };
 
   const onPress = () => navigation.navigate('Details', { task: task });
 

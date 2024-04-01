@@ -7,7 +7,7 @@ import { RootStackParamList } from '../types/RootStackParamList';
 import { useOnlineStatus } from '../contexts/OnlineStatusContext';
 import { useTheme } from '../contexts/ThemeContext';
 import { useQuery } from '@realm/react';
-import TaskSchema from '../schemas/TaskSchema';
+import TaskSchema from '../database/schemas/TaskSchema';
 import AddTaskButton from '../components/AddTaskButton';
 
 type Section = {

@@ -3,8 +3,8 @@ import { View, Image, Text, StyleSheet } from 'react-native';
 import { useTheme } from '../contexts/ThemeContext';
 
 interface TaskItemProps {
-  title?: string | undefined;
-  imageUrl?: string | undefined;
+  title: string | null;
+  imageUrl: string | null;
 }
 
 const TaskItem = ({ title, imageUrl }: TaskItemProps): ReactElement => {
@@ -12,7 +12,11 @@ const TaskItem = ({ title, imageUrl }: TaskItemProps): ReactElement => {
 
   return (
     <View style={styles.container}>
-      <Image source={{ uri: imageUrl }} style={styles.image} />
+      {imageUrl ? (
+        <Image source={{ uri: imageUrl }} style={styles.image} />
+      ) : (
+        <Text style={[styles.image, styles.noImagePlaceholder]}>No Image</Text>
+      )}
       <Text style={[styles.title, isDarkTheme ? styles.darkTheme : styles.lightTheme]}>{title}</Text>
     </View>
   );
@@ -40,6 +44,14 @@ const styles = StyleSheet.create({
   },
   darkTheme: {
     color: 'white',
+  },
+  noImagePlaceholder: {
+    backgroundColor: '#aaa',
+    padding: 4,
+    verticalAlign: 'middle',
+    textAlign: 'center',
+    fontSize: 12,
+    color: '#555',
   },
 });
 

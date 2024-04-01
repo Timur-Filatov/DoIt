@@ -3,10 +3,10 @@ import { Realm } from '@realm/react';
 export default class TaskSchema extends Realm.Object {
   id!: number;
   title!: string;
-  description!: string;
-  imageUrl!: string;
+  description?: string;
+  imageUrl?: string;
 
-  constructor(realm: Realm, id: number, title: string, description: string, imageUrl: string) {
+  constructor(realm: Realm, id: number, title: string, description: string | null, imageUrl: string | null) {
     super(realm, {
       id,
       title,
@@ -21,8 +21,8 @@ export default class TaskSchema extends Realm.Object {
     properties: {
       id: 'int',
       title: 'string',
-      description: 'string',
-      imageUrl: 'string',
+      description: 'string?',
+      imageUrl: 'string?',
     },
   };
 }
