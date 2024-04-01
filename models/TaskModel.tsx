@@ -1,6 +1,6 @@
 export interface TaskModel {
   id: number;
-  title: string;
-  description: string;
-  imageUrl: string;
+  title?: string | undefined;
+  description?: string | undefined;
+  imageUrl?: string | undefined;
 }

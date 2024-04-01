@@ -17,9 +17,12 @@ const DetailScreen = ({
     },
   },
 }: DetailScreenRouteProp): ReactElement => {
-  const [currentTitle, setCurrentTitle] = useState(title);
-  const [currentDescription, setCurrentDescription] = useState(description);
-  const [currentImageUrl, setCurrentImageUrl] = useState(imageUrl);
+  const [currentTitle, setCurrentTitle] = useState<string | null>(title);
+  const [currentDescription, setCurrentDescription] = useState<string | null>(description);
+  const [currentImageUrl, setCurrentImageUrl] = useState<string | null>(imageUrl);
+
+  const isEdited: boolean =
+    currentTitle !== title || currentDescription !== description || currentImageUrl !== imageUrl;
 
   const realm = useRealm();
   const { isDarkTheme } = useTheme();
@@ -84,22 +87,24 @@ const DetailScreen = ({
     <ScrollView
       contentContainerStyle={styles.container}
       style={isDarkTheme ? styles.darkBackgroundTheme : styles.lightBackgroundTheme}>
-      <Image source={{ uri: currentImageUrl }} style={styles.image} />
+      {currentImageUrl ? <Image source={{ uri: currentImageUrl }} style={styles.image} /> : null}
       <Button title="Select Image" onPress={selectImage} />
       <TextInput
-        value={currentTitle}
+        value={currentTitle ?? undefined}
         onChangeText={setCurrentTitle}
-        placeholder="Title"
+        placeholder="Enter Title"
+        placeholderTextColor={isDarkTheme ? 'white' : 'black'}
         style={[styles.title, styles.borderStyle, textTheme]}
       />
       <TextInput
-        value={currentDescription}
+        value={currentDescription ?? undefined}
         onChangeText={setCurrentDescription}
-        placeholder="Description"
+        placeholder="Enter Description"
+        placeholderTextColor={isDarkTheme ? 'white' : 'black'}
         multiline
         style={[styles.description, styles.borderStyle, textTheme]}
       />
-      <Button title="Save" onPress={saveTodo} />
+      <Button title="Save" onPress={saveTodo} disabled={!isEdited} />
     </ScrollView>
   );
 };

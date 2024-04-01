@@ -3,8 +3,8 @@ import { View, Image, Text, StyleSheet } from 'react-native';
 import { useTheme } from '../contexts/ThemeContext';
 
 interface TaskItemProps {
-  title: string;
-  imageUrl: string;
+  title?: string | undefined;
+  imageUrl?: string | undefined;
 }
 
 const TaskItem = ({ title, imageUrl }: TaskItemProps): ReactElement => {
@@ -31,6 +31,7 @@ const styles = StyleSheet.create({
   },
   title: {
     fontWeight: 'bold',
+    fontSize: 14,
     flex: 1,
     textAlignVertical: 'center',
   },
