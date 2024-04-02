@@ -25,7 +25,28 @@ const MasterScreen = (): ReactElement => {
 
   useEffect(() => {
     const convertedDBTasks: TaskModel[] = JSON.parse(JSON.stringify(dbTasks)) as TaskModel[];
+
+    const updateSections = (newSection: Section) => {
+      setSections(prevSections => {
+        let sectionsToUpdate = [...prevSections];
+        const sectionIndex = sectionsToUpdate.findIndex(section => section.title === newSection.title);
+
+        if (sectionIndex !== -1) {
+          if (newSection.data.length > 0) {
+            sectionsToUpdate[sectionIndex] = newSection;
+          } else {
+            sectionsToUpdate.splice(sectionIndex, 1);
+          }
+        } else if (newSection.data.length > 0) {
+          sectionsToUpdate.push(newSection);
+        }
+
+        return sectionsToUpdate.sort((a, b) => a.title.localeCompare(b.title));
+      });
+    };
+
     let offlineSection: Section = { title: 'Offline Tasks', data: convertedDBTasks };
+    updateSections(offlineSection);
 
     if (isOnline) {
       async function fetchData() {
@@ -37,25 +58,23 @@ const MasterScreen = (): ReactElement => {
             id: item.id,
             title: item.title,
             description: item.body,
-            imageUrl: 'https://via.placeholder.com/150',
+            imageUrl: null,
           }));
 
           const onlineExceptOffline = mappedTasks
             .filter(x => !convertedDBTasks.some(y => y.id === x.id))
-            .sort(x => x.id);
+            .sort((a, b) => a.id - b.id);
 
           let onlineSection: Section = { title: 'Online Tasks', data: onlineExceptOffline };
-          setSections([offlineSection, onlineSection]);
+
+          updateSections(onlineSection);
         } catch (error) {
-          console.error(error);
+          console.log(error);
         }
       }
       fetchData();
-      return;
-    }
-
-    if (dbTasks) {
-      setSections([offlineSection]);
+    } else {
+      updateSections({ title: 'Online Tasks', data: [] });
     }
   }, [dbTasks, isOnline]);
 
