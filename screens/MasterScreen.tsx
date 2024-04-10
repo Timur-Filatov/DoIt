@@ -54,12 +54,14 @@ const MasterScreen = (): ReactElement => {
           const response = await fetch('https://jsonplaceholder.typicode.com/posts');
           const json = await response.json();
 
-          const mappedTasks: TaskModel[] = json.map((item: any) => ({
-            id: item.id,
-            title: item.title,
-            description: item.body,
-            imageUrl: null,
-          }));
+          const mappedTasks: TaskModel[] = json.map(
+            (item: any): TaskModel => ({
+              id: item.id,
+              title: item.title,
+              description: item.body,
+              imageUrl: null,
+            }),
+          );
 
           const onlineExceptOffline = mappedTasks
             .filter(x => !convertedDBTasks.some(y => y.id === x.id))
