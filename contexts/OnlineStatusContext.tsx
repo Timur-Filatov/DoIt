@@ -1,4 +1,11 @@
-import React, { createContext, useContext, ReactNode, useState, useCallback, ReactElement } from 'react';
+import React, {
+  createContext,
+  useContext,
+  ReactNode,
+  useState,
+  useCallback,
+  ReactElement,
+} from 'react';
 
 interface OnlineStatusContextType {
   isOnline: boolean;
@@ -23,6 +30,8 @@ export const OnlineStatusProvider = ({ children }: { children: ReactNode }): Rea
   }, []);
 
   return (
-    <OnlineStatusContext.Provider value={{ isOnline, toggleOnlineStatus }}>{children}</OnlineStatusContext.Provider>
+    <OnlineStatusContext.Provider value={{ isOnline, toggleOnlineStatus }}>
+      {children}
+    </OnlineStatusContext.Provider>
   );
 };

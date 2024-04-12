@@ -6,7 +6,11 @@ const ThemeToggleButton = (): ReactElement => {
   const { isDarkTheme, toggleTheme } = useTheme();
 
   return (
-    <Button onPress={toggleTheme} title={isDarkTheme ? 'Go Light' : 'Go Dark'} color={isDarkTheme ? '#999' : '#333'} />
+    <Button
+      onPress={toggleTheme}
+      title={isDarkTheme ? 'Go Light' : 'Go Dark'}
+      color={isDarkTheme ? '#999' : '#333'}
+    />
   );
 };
 

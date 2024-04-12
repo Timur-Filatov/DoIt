@@ -3,12 +3,12 @@ import { Pressable, StyleSheet, SectionList, Text } from 'react-native';
 import { NavigationProp, useNavigation } from '@react-navigation/native';
 import TaskItem from '../components/TaskItem';
 import { TaskModel } from '../models/TaskModel';
-import { RootStackParamList } from '../types/RootStackParamList';
 import { useOnlineStatus } from '../contexts/OnlineStatusContext';
 import { useTheme } from '../contexts/ThemeContext';
 import { useQuery } from '@realm/react';
 import TaskSchema from '../database/schemas/TaskSchema';
 import AddTaskButton from '../components/AddTaskButton';
+import { RootStackParamList } from '../AppNavigator';
 
 type Section = {
   title: string;
@@ -29,7 +29,9 @@ const MasterScreen = (): ReactElement => {
     const updateSections = (newSection: Section) => {
       setSections(prevSections => {
         let sectionsToUpdate = [...prevSections];
-        const sectionIndex = sectionsToUpdate.findIndex(section => section.title === newSection.title);
+        const sectionIndex = sectionsToUpdate.findIndex(
+          section => section.title === newSection.title,
+        );
 
         if (sectionIndex !== -1) {
           if (newSection.data.length > 0) {
@@ -91,7 +93,11 @@ const MasterScreen = (): ReactElement => {
       )}
       style={isDarkTheme ? styles.darkBackgroundTheme : styles.lightBackgroundTheme}
       renderSectionHeader={({ section: { title } }) => (
-        <Text style={[styles.headerTheme, isDarkTheme ? styles.darkHeaderTheme : styles.lightHeaderTheme]}>
+        <Text
+          style={[
+            styles.headerTheme,
+            isDarkTheme ? styles.darkHeaderTheme : styles.lightHeaderTheme,
+          ]}>
           {title}
         </Text>
       )}

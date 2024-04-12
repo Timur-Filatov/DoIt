@@ -6,7 +6,13 @@ export default class TaskSchema extends Realm.Object {
   description?: string;
   imageUrl?: string;
 
-  constructor(realm: Realm, id: number, title: string, description: string | null, imageUrl: string | null) {
+  constructor(
+    realm: Realm,
+    id: number,
+    title: string,
+    description: string | null,
+    imageUrl: string | null,
+  ) {
     super(realm, {
       id,
       title,

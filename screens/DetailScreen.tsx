@@ -1,12 +1,20 @@
 import React, { ReactElement, useState } from 'react';
-import { Image, StyleSheet, ScrollView, Button, TextInput, Platform, PermissionsAndroid } from 'react-native';
+import {
+  Image,
+  StyleSheet,
+  ScrollView,
+  Button,
+  TextInput,
+  Platform,
+  PermissionsAndroid,
+} from 'react-native';
 import { NativeStackScreenProps } from '@react-navigation/native-stack';
-import { RootStackParamList } from '../types/RootStackParamList';
 import { launchImageLibrary } from 'react-native-image-picker';
 import { useTheme } from '../contexts/ThemeContext';
 import { useRealm } from '@realm/react';
 import { TaskModel } from '../models/TaskModel';
 import { UpdateMode } from 'realm';
+import { RootStackParamList } from '../AppNavigator';
 
 type DetailScreenRouteProp = NativeStackScreenProps<RootStackParamList, 'Details'>;
 
@@ -29,7 +37,12 @@ const DetailScreen = ({
   const textTheme = isDarkTheme ? styles.darkTheme : styles.lightTheme;
 
   const saveTodo = async () => {
-    const task: TaskModel = { id: id, title: currentTitle, description: currentDescription, imageUrl: currentImageUrl };
+    const task: TaskModel = {
+      id: id,
+      title: currentTitle,
+      description: currentDescription,
+      imageUrl: currentImageUrl,
+    };
     realm.write(() => {
       realm.create('Task', task, UpdateMode.Modified);
     });
@@ -38,13 +51,16 @@ const DetailScreen = ({
   const requestStoragePermission = async () => {
     if (Platform.OS === 'android') {
       try {
-        const granted = await PermissionsAndroid.request(PermissionsAndroid.PERMISSIONS.READ_EXTERNAL_STORAGE, {
-          title: 'Permission to access storage',
-          message: 'We need permission to access your photos',
-          buttonNeutral: 'Ask Me Later',
-          buttonNegative: 'Cancel',
-          buttonPositive: 'OK',
-        });
+        const granted = await PermissionsAndroid.request(
+          PermissionsAndroid.PERMISSIONS.READ_EXTERNAL_STORAGE,
+          {
+            title: 'Permission to access storage',
+            message: 'We need permission to access your photos',
+            buttonNeutral: 'Ask Me Later',
+            buttonNegative: 'Cancel',
+            buttonPositive: 'OK',
+          },
+        );
         return granted === PermissionsAndroid.RESULTS.GRANTED;
       } catch (err) {
         console.warn(err);

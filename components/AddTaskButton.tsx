@@ -1,8 +1,8 @@
 import { NavigationProp, useNavigation } from '@react-navigation/native';
 import React, { ReactElement } from 'react';
 import { Button } from 'react-native';
-import { RootStackParamList } from '../types/RootStackParamList';
 import { TaskModel } from '../models/TaskModel';
+import { RootStackParamList } from '../AppNavigator';
 
 const AddTaskButton = (): ReactElement => {
   const navigation = useNavigation<NavigationProp<RootStackParamList>>();
