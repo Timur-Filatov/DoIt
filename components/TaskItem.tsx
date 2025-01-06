@@ -17,7 +17,9 @@ const TaskItem = ({ title, imageUrl }: TaskItemProps): ReactElement => {
       ) : (
         <Text style={[styles.image, styles.noImagePlaceholder]}>No Image</Text>
       )}
-      <Text style={[styles.title, isDarkTheme ? styles.darkTheme : styles.lightTheme]}>{title}</Text>
+      <Text style={[styles.title, isDarkTheme ? styles.darkTheme : styles.lightTheme]}>
+        {title}
+      </Text>
     </View>
   );
 };

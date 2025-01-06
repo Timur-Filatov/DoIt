@@ -1,4 +1,11 @@
-import React, { createContext, useContext, ReactNode, useState, useCallback, ReactElement } from 'react';
+import React, {
+  createContext,
+  useContext,
+  ReactNode,
+  useState,
+  useCallback,
+  ReactElement,
+} from 'react';
 import { useColorScheme } from 'react-native';
 
 interface ThemeContextType {
@@ -24,5 +31,7 @@ export const ThemeProvider = ({ children }: { children: ReactNode }): ReactEleme
     setIsDarkTheme(prevIsDarkTheme => isDeviceThemeDark || !prevIsDarkTheme);
   }, [isDeviceThemeDark]);
 
-  return <ThemeContext.Provider value={{ isDarkTheme, toggleTheme }}>{children}</ThemeContext.Provider>;
+  return (
+    <ThemeContext.Provider value={{ isDarkTheme, toggleTheme }}>{children}</ThemeContext.Provider>
+  );
 };
