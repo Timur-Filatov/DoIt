@@ -48,30 +48,44 @@ const DetailScreen = ({
     });
   };
 
-  const requestStoragePermission = async () => {
-    if (Platform.OS === 'android') {
-      try {
+  async function requestImagePermission() {
+    if (Platform.OS !== 'android') {
+      return true;
+    }
+
+    try {
+      if (Platform.Version >= 33) {
         const granted = await PermissionsAndroid.request(
-          PermissionsAndroid.PERMISSIONS.READ_EXTERNAL_STORAGE,
+          PermissionsAndroid.PERMISSIONS.READ_MEDIA_IMAGES,
           {
-            title: 'Permission to access storage',
-            message: 'We need permission to access your photos',
+            title: 'Permission to access your images',
+            message: 'We need permission to pick images from your gallery',
             buttonNeutral: 'Ask Me Later',
             buttonNegative: 'Cancel',
             buttonPositive: 'OK',
           },
         );
         return granted === PermissionsAndroid.RESULTS.GRANTED;
-      } catch (err) {
-        console.warn(err);
-        return false;
       }
+      const granted = await PermissionsAndroid.request(
+        PermissionsAndroid.PERMISSIONS.READ_EXTERNAL_STORAGE,
+        {
+          title: 'Permission to access storage',
+          message: 'We need permission to access your photos',
+          buttonNeutral: 'Ask Me Later',
+          buttonNegative: 'Cancel',
+          buttonPositive: 'OK',
+        },
+      );
+      return granted === PermissionsAndroid.RESULTS.GRANTED;
+    } catch (err) {
+      console.warn(err);
+      return false;
     }
-    return true;
-  };
+  }
 
   const selectImage = async () => {
-    const hasPermission = await requestStoragePermission();
+    const hasPermission = await requestImagePermission();
     if (!hasPermission) {
       return;
     }
