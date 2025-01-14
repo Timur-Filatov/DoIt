@@ -12,7 +12,7 @@ const AddTaskButton = (): ReactElement => {
 
   const onPress = () => navigation.navigate('Details', { task: task });
 
-  return <Button title="Add New Task" onPress={onPress} />;
+  return <Button title="Add New Task" onPress={onPress} color={'#08d'} />;
 };
 
 export default AddTaskButton;

@@ -1,5 +1,5 @@
 import React, { ReactElement, useEffect, useState } from 'react';
-import { Pressable, StyleSheet, SectionList, Text } from 'react-native';
+import { Pressable, StyleSheet, SectionList, Text, View } from 'react-native';
 import { NavigationProp, useNavigation } from '@react-navigation/native';
 import TaskItem from '../components/TaskItem';
 import { TaskModel } from '../models/TaskModel';
@@ -105,8 +105,11 @@ const MasterScreen = (): ReactElement => {
             {title}
           </Text>
         )}
-        ListHeaderComponent={AddTaskButton}
       />
+
+      <View style={styles.addButtonContainer}>
+        <AddTaskButton />
+      </View>
     </>
   );
 };
@@ -130,6 +133,12 @@ const styles = StyleSheet.create({
   },
   darkBackgroundTheme: {
     backgroundColor: '#222',
+  },
+  addButtonContainer: {
+    position: 'absolute',
+    bottom: 20,
+    right: 20,
+    maxWidth: '99%',
   },
 });
 
