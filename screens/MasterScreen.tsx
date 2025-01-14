@@ -9,6 +9,7 @@ import { useQuery } from '@realm/react';
 import TaskSchema from '../database/schemas/TaskSchema';
 import AddTaskButton from '../components/AddTaskButton';
 import { RootStackParamList } from '../AppNavigator';
+import CustomToolbar from '../components/CustomToolbar';
 
 type Section = {
   title: string;
@@ -83,26 +84,30 @@ const MasterScreen = (): ReactElement => {
   }, [dbTasks, isOnline]);
 
   return (
-    <SectionList
-      sections={sections}
-      keyExtractor={item => item.id.toString()}
-      renderItem={({ item }) => (
-        <Pressable onPress={() => navigation.navigate('Details', { task: item })}>
-          <TaskItem title={item.title} imageUrl={item.imageUrl} />
-        </Pressable>
-      )}
-      style={isDarkTheme ? styles.darkBackgroundTheme : styles.lightBackgroundTheme}
-      renderSectionHeader={({ section: { title } }) => (
-        <Text
-          style={[
-            styles.headerTheme,
-            isDarkTheme ? styles.darkHeaderTheme : styles.lightHeaderTheme,
-          ]}>
-          {title}
-        </Text>
-      )}
-      ListHeaderComponent={AddTaskButton}
-    />
+    <>
+      <CustomToolbar isDarkTheme={isDarkTheme} />
+
+      <SectionList
+        sections={sections}
+        keyExtractor={item => item.id.toString()}
+        renderItem={({ item }) => (
+          <Pressable onPress={() => navigation.navigate('Details', { task: item })}>
+            <TaskItem title={item.title} imageUrl={item.imageUrl} />
+          </Pressable>
+        )}
+        style={isDarkTheme ? styles.darkBackgroundTheme : styles.lightBackgroundTheme}
+        renderSectionHeader={({ section: { title } }) => (
+          <Text
+            style={[
+              styles.headerTheme,
+              isDarkTheme ? styles.darkHeaderTheme : styles.lightHeaderTheme,
+            ]}>
+            {title}
+          </Text>
+        )}
+        ListHeaderComponent={AddTaskButton}
+      />
+    </>
   );
 };
 
