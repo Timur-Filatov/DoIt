@@ -24,12 +24,14 @@ export const useTheme = () => {
 };
 
 export const ThemeProvider = ({ children }: { children: ReactNode }): ReactElement => {
-  const [isDarkTheme, setIsDarkTheme] = useState<boolean>(true);
-  const isDeviceThemeDark = useColorScheme() === 'dark';
+  const deviceIsDark = useColorScheme() === 'dark';
+  const [isDarkTheme, setIsDarkTheme] = useState<boolean>(deviceIsDark);
 
   const toggleTheme = useCallback(() => {
-    setIsDarkTheme(prevIsDarkTheme => isDeviceThemeDark || !prevIsDarkTheme);
-  }, [isDeviceThemeDark]);
+    setIsDarkTheme(prev => {
+      return !prev;
+    });
+  }, []);
 
   return (
     <ThemeContext.Provider value={{ isDarkTheme, toggleTheme }}>{children}</ThemeContext.Provider>
