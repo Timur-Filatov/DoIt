@@ -1,6 +1,8 @@
 import React, { ReactElement } from 'react';
 import { View, Image, Text, StyleSheet } from 'react-native';
 import { useTheme } from '../contexts/ThemeContext';
+import { lightTheme, darkTheme } from '../styles/themes';
+import { colors, spacing, borderRadius, fontSize } from '../styles/styles';
 
 interface TaskItemProps {
   title: string | null;
@@ -9,6 +11,7 @@ interface TaskItemProps {
 
 const TaskItem = ({ title, imageUrl }: TaskItemProps): ReactElement => {
   const { isDarkTheme } = useTheme();
+  const theme = isDarkTheme ? darkTheme : lightTheme;
 
   return (
     <View style={styles.container}>
@@ -17,9 +20,7 @@ const TaskItem = ({ title, imageUrl }: TaskItemProps): ReactElement => {
       ) : (
         <Text style={[styles.image, styles.noImagePlaceholder]}>No Image</Text>
       )}
-      <Text style={[styles.title, isDarkTheme ? styles.darkTheme : styles.lightTheme]}>
-        {title}
-      </Text>
+      <Text style={[styles.title, { color: theme.colors.text }]}>{title}</Text>
     </View>
   );
 };
@@ -28,33 +29,27 @@ const styles = StyleSheet.create({
   container: {
     flexDirection: 'row',
     alignItems: 'center',
-    padding: 10,
+    padding: spacing.medium,
   },
   image: {
     width: 50,
     height: 50,
-    marginRight: 10,
-    borderRadius: 10,
+    marginRight: spacing.medium,
+    borderRadius: borderRadius.large,
   },
   title: {
     fontWeight: 'bold',
-    fontSize: 14,
+    fontSize: fontSize.medium,
     flex: 1,
     textAlignVertical: 'center',
   },
-  lightTheme: {
-    color: 'black',
-  },
-  darkTheme: {
-    color: 'white',
-  },
   noImagePlaceholder: {
-    backgroundColor: '#aaa',
-    padding: 4,
+    backgroundColor: colors.gray,
+    padding: spacing.small,
     verticalAlign: 'middle',
     textAlign: 'center',
-    fontSize: 12,
-    color: '#555',
+    fontSize: fontSize.small,
+    color: colors.dark,
   },
 });
 

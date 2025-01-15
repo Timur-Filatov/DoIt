@@ -15,6 +15,8 @@ import { useRealm } from '@realm/react';
 import { TaskModel } from '../models/TaskModel';
 import { UpdateMode } from 'realm';
 import { RootStackParamList } from '../AppNavigator';
+import { globalStyles, spacing } from '../styles/styles';
+import { lightTheme, darkTheme } from '../styles/themes';
 
 type DetailScreenRouteProp = NativeStackScreenProps<RootStackParamList, 'Details'>;
 
@@ -34,7 +36,7 @@ const DetailScreen = ({
 
   const realm = useRealm();
   const { isDarkTheme } = useTheme();
-  const textTheme = isDarkTheme ? styles.darkTheme : styles.lightTheme;
+  const theme = isDarkTheme ? darkTheme : lightTheme;
 
   const saveTodo = async () => {
     const task: TaskModel = {
@@ -115,24 +117,23 @@ const DetailScreen = ({
 
   return (
     <ScrollView
-      contentContainerStyle={styles.container}
-      style={isDarkTheme ? styles.darkBackgroundTheme : styles.lightBackgroundTheme}>
+      contentContainerStyle={[styles.container, { backgroundColor: theme.colors.background }]}>
       {currentImageUrl ? <Image source={{ uri: currentImageUrl }} style={styles.image} /> : null}
       <Button title="Select Image" onPress={selectImage} />
       <TextInput
         value={currentTitle ?? undefined}
         onChangeText={setCurrentTitle}
         placeholder="Enter Title"
-        placeholderTextColor={isDarkTheme ? 'white' : 'black'}
-        style={[styles.title, styles.borderStyle, textTheme]}
+        placeholderTextColor={theme.colors.text}
+        style={[globalStyles.titleInput, globalStyles.border, { color: theme.colors.text }]}
       />
       <TextInput
         value={currentDescription ?? undefined}
         onChangeText={setCurrentDescription}
         placeholder="Enter Description"
-        placeholderTextColor={isDarkTheme ? 'white' : 'black'}
+        placeholderTextColor={theme.colors.text}
         multiline
-        style={[styles.description, styles.borderStyle, textTheme]}
+        style={[globalStyles.multlineInput, globalStyles.border, { color: theme.colors.text }]}
       />
       <Button title="Save" onPress={saveTodo} disabled={!isEdited} />
     </ScrollView>
@@ -141,51 +142,15 @@ const DetailScreen = ({
 
 const styles = StyleSheet.create({
   container: {
-    flexDirection: 'column',
-    alignItems: 'stretch',
-    justifyContent: 'flex-start',
-    alignContent: 'stretch',
-    flexWrap: 'nowrap',
-    padding: 10,
-    rowGap: 10,
+    ...globalStyles.container,
+    padding: spacing.medium,
+    rowGap: spacing.medium,
   },
   image: {
     width: 'auto',
     height: 300,
-    margin: 5,
+    margin: spacing.small,
     resizeMode: 'contain',
-  },
-  title: {
-    fontWeight: 'bold',
-    textAlignVertical: 'center',
-    paddingHorizontal: 10,
-    paddingVertical: 5,
-  },
-  description: {
-    textAlignVertical: 'center',
-    minHeight: 100,
-    paddingHorizontal: 10,
-    paddingVertical: 5,
-    verticalAlign: 'top',
-  },
-  borderStyle: {
-    borderWidth: 1,
-    borderRadius: 5,
-    borderColor: '#999',
-  },
-  lightTheme: {
-    color: 'black',
-    backgroundColor: 'white',
-  },
-  darkTheme: {
-    color: 'white',
-    backgroundColor: 'black',
-  },
-  lightBackgroundTheme: {
-    backgroundColor: 'white',
-  },
-  darkBackgroundTheme: {
-    backgroundColor: 'black',
   },
 });
 

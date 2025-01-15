@@ -10,6 +10,8 @@ import TaskSchema from '../database/schemas/TaskSchema';
 import AddTaskButton from '../components/AddTaskButton';
 import { RootStackParamList } from '../AppNavigator';
 import CustomToolbar from '../components/CustomToolbar';
+import { globalStyles, spacing } from '../styles/styles';
+import { lightTheme, darkTheme } from '../styles/themes';
 
 type Section = {
   title: string;
@@ -83,6 +85,8 @@ const MasterScreen = (): ReactElement => {
     }
   }, [dbTasks, isOnline]);
 
+  const theme = isDarkTheme ? darkTheme : lightTheme;
+
   return (
     <>
       <CustomToolbar isDarkTheme={isDarkTheme} />
@@ -95,19 +99,18 @@ const MasterScreen = (): ReactElement => {
             <TaskItem title={item.title} imageUrl={item.imageUrl} />
           </Pressable>
         )}
-        style={isDarkTheme ? styles.darkBackgroundTheme : styles.lightBackgroundTheme}
+        style={{ backgroundColor: theme.colors.background }}
         renderSectionHeader={({ section: { title } }) => (
           <Text
             style={[
-              styles.headerTheme,
-              isDarkTheme ? styles.darkHeaderTheme : styles.lightHeaderTheme,
+              styles.header,
+              { color: theme.colors.headerText, backgroundColor: theme.colors.headerBackground },
             ]}>
             {title}
           </Text>
         )}
         contentContainerStyle={styles.contentContainer}
       />
-
       <View style={styles.addButtonContainer}>
         <AddTaskButton />
       </View>
@@ -116,34 +119,18 @@ const MasterScreen = (): ReactElement => {
 };
 
 const styles = StyleSheet.create({
-  lightHeaderTheme: {
-    color: 'black',
-    backgroundColor: 'white',
+  header: {
+    ...globalStyles.header,
+    paddingLeft: spacing.medium,
   },
-  darkHeaderTheme: {
-    color: 'white',
-    backgroundColor: 'black',
-  },
-  headerTheme: {
-    fontWeight: 'bold',
-    paddingLeft: 10,
-    fontSize: 18,
-  },
-  lightBackgroundTheme: {
-    backgroundColor: 'white',
-  },
-  darkBackgroundTheme: {
-    backgroundColor: '#222',
+  contentContainer: {
+    paddingTop: spacing.medium,
+    paddingBottom: 100,
   },
   addButtonContainer: {
     position: 'absolute',
-    bottom: 20,
-    right: 20,
-    maxWidth: '99%',
-  },
-  contentContainer: {
-    paddingTop: 10,
-    paddingBottom: 100,
+    bottom: spacing.xLarge,
+    right: spacing.xLarge,
   },
 });
 

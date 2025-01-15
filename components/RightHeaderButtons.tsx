@@ -2,6 +2,7 @@ import React, { ReactElement } from 'react';
 import ConnectionToggleButton from './ConnectionToggleButton';
 import ThemeToggleButton from './ThemeToggleButton';
 import { StyleSheet, View } from 'react-native';
+import { spacing } from '../styles/styles';
 
 const RightHeaderButtons = (): ReactElement => {
   return (
@@ -15,7 +16,7 @@ const RightHeaderButtons = (): ReactElement => {
 const styles = StyleSheet.create({
   container: {
     flexDirection: 'row',
-    gap: 10,
+    gap: spacing.medium,
   },
 });
 
