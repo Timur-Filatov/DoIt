@@ -40,11 +40,9 @@ const styles = StyleSheet.create({
   },
   lightHeaderTheme: {
     color: 'black',
-    backgroundColor: 'white',
   },
   darkHeaderTheme: {
     color: 'white',
-    backgroundColor: 'black',
   },
   headerTheme: {
     fontWeight: 'bold',

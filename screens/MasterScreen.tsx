@@ -105,6 +105,7 @@ const MasterScreen = (): ReactElement => {
             {title}
           </Text>
         )}
+        contentContainerStyle={{ paddingBottom: 100 }}
       />
 
       <View style={styles.addButtonContainer}>
