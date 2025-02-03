@@ -1,13 +1,15 @@
 import React, { ReactElement } from 'react';
 import { Button } from 'react-native';
-import { useOnlineStatus } from '../contexts/OnlineStatusContext';
+import { selectOnlineStatus, toggleOnlineStatus } from '../slices/onlineSlice';
+import { useAppDispatch, useAppSelector } from '../hooks/storeHooks';
 
 const ConnectionToggleButton = (): ReactElement => {
-  const { isOnline, toggleOnlineStatus } = useOnlineStatus();
+  const dispatch = useAppDispatch();
+  const isOnline = useAppSelector(selectOnlineStatus);
 
   return (
     <Button
-      onPress={toggleOnlineStatus}
+      onPress={() => dispatch(toggleOnlineStatus())}
       title={isOnline ? 'Online' : 'Offline'}
       color={isOnline ? 'green' : '#999'}
     />

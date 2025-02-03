@@ -10,13 +10,14 @@ import {
 } from 'react-native';
 import { NativeStackScreenProps } from '@react-navigation/native-stack';
 import { launchImageLibrary } from 'react-native-image-picker';
-import { useTheme } from '../contexts/ThemeContext';
 import { useRealm } from '@realm/react';
 import { TaskModel } from '../models/TaskModel';
 import { UpdateMode } from 'realm';
 import { RootStackParamList } from '../AppNavigator';
 import { globalStyles, spacing } from '../styles/styles';
 import { lightTheme, darkTheme } from '../styles/themes';
+import { selectTheme } from '../slices/themeSlice';
+import { useAppSelector } from '../hooks/storeHooks';
 
 type DetailScreenRouteProp = NativeStackScreenProps<RootStackParamList, 'Details'>;
 
@@ -35,7 +36,7 @@ const DetailScreen = ({
     currentTitle !== title || currentDescription !== description || currentImageUrl !== imageUrl;
 
   const realm = useRealm();
-  const { isDarkTheme } = useTheme();
+  const isDarkTheme = useAppSelector(selectTheme);
   const theme = isDarkTheme ? darkTheme : lightTheme;
 
   const saveTodo = async () => {

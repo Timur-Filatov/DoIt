@@ -1,10 +1,8 @@
-import React, { ReactElement, useEffect, useState } from 'react';
-import { Pressable, StyleSheet, SectionList, Text, View } from 'react-native';
+import React, { ReactElement, useCallback, useEffect, useMemo, useState } from 'react';
+import { Pressable, StyleSheet, SectionList, Text, View, ActivityIndicator } from 'react-native';
 import { NavigationProp, useNavigation } from '@react-navigation/native';
 import TaskItem from '../components/TaskItem';
 import { TaskModel } from '../models/TaskModel';
-import { useOnlineStatus } from '../contexts/OnlineStatusContext';
-import { useTheme } from '../contexts/ThemeContext';
 import { useQuery } from '@realm/react';
 import TaskSchema from '../database/schemas/TaskSchema';
 import AddTaskButton from '../components/AddTaskButton';
@@ -12,6 +10,11 @@ import { RootStackParamList } from '../AppNavigator';
 import CustomToolbar from '../components/CustomToolbar';
 import { globalStyles, spacing } from '../styles/styles';
 import { lightTheme, darkTheme } from '../styles/themes';
+import { useGetOnlineTasksQuery } from '../services/tasksApi';
+import { selectTheme } from '../slices/themeSlice';
+import { selectOnlineStatus } from '../slices/onlineSlice';
+import Toast from 'react-native-simple-toast';
+import { useAppSelector } from '../hooks/storeHooks';
 
 type Section = {
   title: string;
@@ -19,81 +22,70 @@ type Section = {
 };
 
 const MasterScreen = (): ReactElement => {
-  const { isOnline } = useOnlineStatus();
-  const { isDarkTheme } = useTheme();
+  const isOnline = useAppSelector(selectOnlineStatus);
+  const isDarkTheme = useAppSelector(selectTheme);
   const navigation = useNavigation<NavigationProp<RootStackParamList>>();
+
   const dbTasks = useQuery(TaskSchema);
+  const offlineTasks = useMemo(() => JSON.parse(JSON.stringify(dbTasks)) as TaskModel[], [dbTasks]);
+
+  const {
+    data: onlineTasks = [],
+    isLoading,
+    isError,
+    error,
+  } = useGetOnlineTasksQuery(undefined, { skip: !isOnline });
+
+  const filteredOnlineTasks = useMemo(
+    () => onlineTasks.filter(t => !offlineTasks.some(ot => ot.id === t.id)),
+    [onlineTasks, offlineTasks],
+  );
+
+  const shouldShowOnline = useMemo(
+    () => isOnline && filteredOnlineTasks.length > 0,
+    [isOnline, filteredOnlineTasks],
+  );
 
   const [sections, setSections] = useState<Section[]>([]);
 
   useEffect(() => {
-    const convertedDBTasks: TaskModel[] = JSON.parse(JSON.stringify(dbTasks)) as TaskModel[];
+    const onlineWithoutOffline = (onlineTasks || []).filter(
+      onlineTask => !offlineTasks.some(offlineTask => offlineTask.id === onlineTask.id),
+    );
 
-    const updateSections = (newSection: Section) => {
-      setSections(prevSections => {
-        let sectionsToUpdate = [...prevSections];
-        const sectionIndex = sectionsToUpdate.findIndex(
-          section => section.title === newSection.title,
-        );
+    const nextSections: Section[] = [];
 
-        if (sectionIndex !== -1) {
-          if (newSection.data.length > 0) {
-            sectionsToUpdate[sectionIndex] = newSection;
-          } else {
-            sectionsToUpdate.splice(sectionIndex, 1);
-          }
-        } else if (newSection.data.length > 0) {
-          sectionsToUpdate.push(newSection);
-        }
-
-        return sectionsToUpdate.sort((a, b) => a.title.localeCompare(b.title));
-      });
-    };
-
-    let offlineSection: Section = { title: 'Offline Tasks', data: convertedDBTasks };
-    updateSections(offlineSection);
-
-    if (isOnline) {
-      async function fetchData() {
-        try {
-          const response = await fetch('https://jsonplaceholder.typicode.com/posts');
-          const json = await response.json();
-
-          const mappedTasks: TaskModel[] = json.map(
-            (item: any): TaskModel => ({
-              id: item.id,
-              title: item.title,
-              description: item.body,
-              imageUrl: null,
-            }),
-          );
-
-          const onlineExceptOffline = mappedTasks
-            .filter(x => !convertedDBTasks.some(y => y.id === x.id))
-            .sort((a, b) => a.id - b.id);
-
-          let onlineSection: Section = { title: 'Online Tasks', data: onlineExceptOffline };
-
-          updateSections(onlineSection);
-        } catch (error) {
-          console.log(error);
-        }
-      }
-      fetchData();
-    } else {
-      updateSections({ title: 'Online Tasks', data: [] });
+    if (offlineTasks.length > 0) {
+      nextSections.push({ title: 'Offline Tasks', data: offlineTasks });
     }
-  }, [dbTasks, isOnline]);
 
-  const theme = isDarkTheme ? darkTheme : lightTheme;
+    if (isOnline && onlineWithoutOffline.length > 0) {
+      nextSections.push({ title: 'Online Tasks', data: onlineWithoutOffline });
+    }
+
+    setSections(prev =>
+      JSON.stringify(prev) === JSON.stringify(nextSections) ? prev : nextSections,
+    );
+  }, [offlineTasks, shouldShowOnline, filteredOnlineTasks, isError, onlineTasks, isOnline, error]);
+
+  useEffect(() => {
+    if (isError) {
+      Toast.showWithGravity(`Error loading Online Tasks. \n${error}`, Toast.SHORT, Toast.TOP);
+      console.error('Online Tasks API Error:', error);
+    }
+  }, [isError, error]);
+
+  const theme = useMemo(() => (isDarkTheme ? darkTheme : lightTheme), [isDarkTheme]);
+
+  const keyExtractor = useCallback((item: TaskModel) => `${item.id}-${item.title}`, []);
 
   return (
     <>
       <CustomToolbar isDarkTheme={isDarkTheme} />
-
+      {isLoading && <ActivityIndicator size="large" />}
       <SectionList
         sections={sections}
-        keyExtractor={item => item.id.toString()}
+        keyExtractor={keyExtractor}
         renderItem={({ item }) => (
           <Pressable onPress={() => navigation.navigate('Details', { task: item })}>
             <TaskItem title={item.title} imageUrl={item.imageUrl} />

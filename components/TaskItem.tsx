@@ -1,8 +1,9 @@
 import React, { ReactElement } from 'react';
 import { View, Image, Text, StyleSheet } from 'react-native';
-import { useTheme } from '../contexts/ThemeContext';
 import { lightTheme, darkTheme } from '../styles/themes';
 import { colors, spacing, borderRadius, fontSize } from '../styles/styles';
+import { selectTheme } from '../slices/themeSlice';
+import { useAppSelector } from '../hooks/storeHooks';
 
 interface TaskItemProps {
   title: string | null;
@@ -10,7 +11,7 @@ interface TaskItemProps {
 }
 
 const TaskItem = ({ title, imageUrl }: TaskItemProps): ReactElement => {
-  const { isDarkTheme } = useTheme();
+  const isDarkTheme = useAppSelector(selectTheme);
   const theme = isDarkTheme ? darkTheme : lightTheme;
 
   return (

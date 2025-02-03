@@ -3,13 +3,12 @@ import { DarkTheme, DefaultTheme, NavigationContainer } from '@react-navigation/
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import MasterScreen from './screens/MasterScreen';
 import DetailScreen from './screens/DetailScreen';
-import { useTheme } from './contexts/ThemeContext';
 import { TaskModel } from './models/TaskModel';
+import { selectTheme } from './slices/themeSlice';
+import { useAppSelector } from './hooks/storeHooks';
 
 export type RootStackParamList = {
-  'Tasks List': {
-    isOnline: boolean;
-  };
+  'Tasks List': undefined;
   Details: {
     task: TaskModel;
   };
@@ -18,7 +17,7 @@ export type RootStackParamList = {
 const Stack = createNativeStackNavigator<RootStackParamList>();
 
 export default function AppNavigator(): ReactElement {
-  const { isDarkTheme } = useTheme();
+  const isDarkTheme = useAppSelector(selectTheme);
 
   return (
     <NavigationContainer theme={isDarkTheme ? DarkTheme : DefaultTheme}>

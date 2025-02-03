@@ -1,13 +1,15 @@
 import React, { ReactElement } from 'react';
 import { Button } from 'react-native';
-import { useTheme } from '../contexts/ThemeContext';
+import { selectTheme, toggleTheme } from '../slices/themeSlice';
+import { useAppDispatch, useAppSelector } from '../hooks/storeHooks';
 
 const ThemeToggleButton = (): ReactElement => {
-  const { isDarkTheme, toggleTheme } = useTheme();
+  const dispatch = useAppDispatch();
+  const isDarkTheme = useAppSelector(selectTheme);
 
   return (
     <Button
-      onPress={toggleTheme}
+      onPress={() => dispatch(toggleTheme())}
       title={isDarkTheme ? 'Go Light' : 'Go Dark'}
       color={isDarkTheme ? '#999' : '#333'}
     />
