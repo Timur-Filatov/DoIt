@@ -1,5 +1,13 @@
-import React, { ReactElement, useCallback, useEffect, useMemo, useState } from 'react';
-import { Pressable, StyleSheet, SectionList, Text, View, ActivityIndicator } from 'react-native';
+import React, { ReactElement, useCallback, useEffect, useMemo } from 'react';
+import {
+  Pressable,
+  StyleSheet,
+  SectionList,
+  Text,
+  View,
+  ActivityIndicator,
+  ListRenderItemInfo,
+} from 'react-native';
 import { NavigationProp, useNavigation } from '@react-navigation/native';
 import TaskItem from '../components/TaskItem';
 import { TaskModel } from '../models/TaskModel';
@@ -27,7 +35,10 @@ const MasterScreen = (): ReactElement => {
   const navigation = useNavigation<NavigationProp<RootStackParamList>>();
 
   const dbTasks = useQuery(TaskSchema);
-  const offlineTasks = useMemo(() => JSON.parse(JSON.stringify(dbTasks)) as TaskModel[], [dbTasks]);
+  const offlineTasks = useMemo(
+    () => (dbTasks ? [...dbTasks].map(task => ({ ...task }) as TaskModel) : []),
+    [dbTasks],
+  );
 
   const {
     data: onlineTasks = [],
@@ -36,19 +47,7 @@ const MasterScreen = (): ReactElement => {
     error,
   } = useGetOnlineTasksQuery(undefined, { skip: !isOnline });
 
-  const filteredOnlineTasks = useMemo(
-    () => onlineTasks.filter(t => !offlineTasks.some(ot => ot.id === t.id)),
-    [onlineTasks, offlineTasks],
-  );
-
-  const shouldShowOnline = useMemo(
-    () => isOnline && filteredOnlineTasks.length > 0,
-    [isOnline, filteredOnlineTasks],
-  );
-
-  const [sections, setSections] = useState<Section[]>([]);
-
-  useEffect(() => {
+  const sections = useMemo(() => {
     const onlineWithoutOffline = (onlineTasks || []).filter(
       onlineTask => !offlineTasks.some(offlineTask => offlineTask.id === onlineTask.id),
     );
@@ -63,10 +62,8 @@ const MasterScreen = (): ReactElement => {
       nextSections.push({ title: 'Online Tasks', data: onlineWithoutOffline });
     }
 
-    setSections(prev =>
-      JSON.stringify(prev) === JSON.stringify(nextSections) ? prev : nextSections,
-    );
-  }, [offlineTasks, shouldShowOnline, filteredOnlineTasks, isError, onlineTasks, isOnline, error]);
+    return nextSections;
+  }, [offlineTasks, onlineTasks, isOnline]);
 
   useEffect(() => {
     if (isError) {
@@ -75,9 +72,31 @@ const MasterScreen = (): ReactElement => {
     }
   }, [isError, error]);
 
-  const theme = useMemo(() => (isDarkTheme ? darkTheme : lightTheme), [isDarkTheme]);
+  const theme = isDarkTheme ? darkTheme : lightTheme;
 
   const keyExtractor = useCallback((item: TaskModel) => `${item.id}-${item.title}`, []);
+
+  const renderItem = useCallback(
+    ({ item }: ListRenderItemInfo<TaskModel>) => (
+      <Pressable onPress={() => navigation.navigate('Details', { task: item })}>
+        <TaskItem title={item.title} imageUrl={item.imageUrl} />
+      </Pressable>
+    ),
+    [navigation],
+  );
+
+  const renderSectionHeader = useCallback(
+    (info: { section: Section }) => (
+      <Text
+        style={[
+          styles.header,
+          { color: theme.colors.headerText, backgroundColor: theme.colors.headerBackground },
+        ]}>
+        {info.section.title}
+      </Text>
+    ),
+    [theme],
+  );
 
   return (
     <>
@@ -86,21 +105,9 @@ const MasterScreen = (): ReactElement => {
       <SectionList
         sections={sections}
         keyExtractor={keyExtractor}
-        renderItem={({ item }) => (
-          <Pressable onPress={() => navigation.navigate('Details', { task: item })}>
-            <TaskItem title={item.title} imageUrl={item.imageUrl} />
-          </Pressable>
-        )}
+        renderItem={renderItem}
+        renderSectionHeader={renderSectionHeader}
         style={{ backgroundColor: theme.colors.background }}
-        renderSectionHeader={({ section: { title } }) => (
-          <Text
-            style={[
-              styles.header,
-              { color: theme.colors.headerText, backgroundColor: theme.colors.headerBackground },
-            ]}>
-            {title}
-          </Text>
-        )}
         contentContainerStyle={styles.contentContainer}
       />
       <View style={styles.addButtonContainer}>
