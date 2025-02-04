@@ -1,4 +1,4 @@
-import React, { ReactElement, useState } from 'react';
+import React, { ReactElement, useCallback, useState } from 'react';
 import {
   Image,
   StyleSheet,
@@ -18,6 +18,7 @@ import { globalStyles, spacing } from '../styles/styles';
 import { lightTheme, darkTheme } from '../styles/themes';
 import { selectTheme } from '../slices/themeSlice';
 import { useAppSelector } from '../hooks/storeHooks';
+import { NavigationProp, useNavigation } from '@react-navigation/native';
 
 type DetailScreenRouteProp = NativeStackScreenProps<RootStackParamList, 'Details'>;
 
@@ -32,16 +33,17 @@ const DetailScreen = ({
   const [currentDescription, setCurrentDescription] = useState<string | null>(description);
   const [currentImageUrl, setCurrentImageUrl] = useState<string | null>(imageUrl);
 
-  const isEdited: boolean =
+  const isEdited =
     currentTitle !== title || currentDescription !== description || currentImageUrl !== imageUrl;
 
   const realm = useRealm();
   const isDarkTheme = useAppSelector(selectTheme);
   const theme = isDarkTheme ? darkTheme : lightTheme;
+  const navigation = useNavigation<NavigationProp<RootStackParamList>>();
 
-  const saveTodo = async () => {
+  const saveTodo = useCallback(async () => {
     const task: TaskModel = {
-      id: id,
+      id,
       title: currentTitle,
       description: currentDescription,
       imageUrl: currentImageUrl,
@@ -49,9 +51,10 @@ const DetailScreen = ({
     realm.write(() => {
       realm.create('Task', task, UpdateMode.Modified);
     });
-  };
+    navigation.goBack();
+  }, [id, currentTitle, currentDescription, currentImageUrl, realm, navigation]);
 
-  async function requestImagePermission() {
+  const requestImagePermission = useCallback(async () => {
     if (Platform.OS !== 'android') {
       return true;
     }
@@ -85,9 +88,9 @@ const DetailScreen = ({
       console.warn(err);
       return false;
     }
-  }
+  }, []);
 
-  const selectImage = async () => {
+  const selectImage = useCallback(async () => {
     const hasPermission = await requestImagePermission();
     if (!hasPermission) {
       return;
@@ -114,12 +117,16 @@ const DetailScreen = ({
         }
       },
     );
-  };
+  }, [requestImagePermission]);
 
   return (
     <ScrollView
-      contentContainerStyle={[styles.container, { backgroundColor: theme.colors.background }]}>
-      {currentImageUrl ? <Image source={{ uri: currentImageUrl }} style={styles.image} /> : null}
+      contentContainerStyle={[
+        styles.contentContainer,
+        { backgroundColor: theme.colors.background },
+      ]}
+      keyboardShouldPersistTaps="handled">
+      {currentImageUrl && <Image source={{ uri: currentImageUrl }} style={styles.image} />}
       <Button title="Select Image" onPress={selectImage} />
       <TextInput
         value={currentTitle ?? undefined}
@@ -136,16 +143,17 @@ const DetailScreen = ({
         multiline
         style={[globalStyles.multlineInput, globalStyles.border, { color: theme.colors.text }]}
       />
-      <Button title="Save" onPress={saveTodo} disabled={!isEdited} />
+      <Button title="Save & exit" onPress={saveTodo} disabled={!isEdited} />
     </ScrollView>
   );
 };
 
 const styles = StyleSheet.create({
-  container: {
-    ...globalStyles.container,
+  contentContainer: {
+    flexGrow: 1,
     padding: spacing.medium,
     rowGap: spacing.medium,
+    paddingBottom: spacing.xLarge,
   },
   image: {
     width: 'auto',
